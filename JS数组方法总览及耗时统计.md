@@ -5,84 +5,154 @@
 ### 01、`push(value)`将value添加到数组的最后，返回数组长度(改变原数组)
 
 ```javascript
-Base
+// Base
 let a = [1, 2, 3, 4, 5]
 let result = a.push(1)
-console.log(result)   // 6
-console.log(a)        // [1, 2, 3, 4, 5, 1] 原数组被改变
+console.log(result)       // 6
+console.log(a)            // [1, 2, 3, 4, 5, 1] 原数组被改变
 
-Advance
+// More
 a = [1, 2, 3, 4, 5]
 result = a.push('a', 'b') // 可一次添加多个值
-console.log(result)   // 7
-console.log(a)        // [1, 2, 3, 4, 5, 'a', 'b']
+console.log(result)       // 7
+console.log(a)            // [1, 2, 3, 4, 5, 'a', 'b']
 ```
 
-### 02、`unshift()`添加元素到数组的开头，返回数组的长度(不改变原数组)
+### 02、`unshift()`添加元素到数组的开头，返回数组的长度(改变原数组)
 
 ```javascript
+// Base
 let a = [1, 2, 3, 4, 5]
 let result = a.unshift(1)
-console.log(result)   // 6
-console.log(a)        // [1, 1, 2, 3, 4, 5]
+console.log(result)           // 6
+console.log(a)                // [1, 1, 2, 3, 4, 5]
+
+// More
+result = a.unshift('a', 'b')  // 可一次添加多个值
+console.log(result)           // 8
+console.log(a)                // ['a', 'b', 1, 1, 2, 3, 4, 5]
 ```
 
 ### 03、`pop()`删除数组中最后一个元素，返回被删除元素(改变原数组)
 
 ```javascript
-let a = [1, 2, 3, 4, 5]
+// Base
+let a = [5]
 let result = a.pop()
 console.log(result)   // 5
-console.log(a)        // [1, 2, 3, 4]
+console.log(a)        // []
+
+// More
+result = a.pop()      // 数组元素为空后会返回undefined
+console.log(result)   // undefined
+console.log(a)        // []
 ```
 
 ### 04、`shift()`删除数组第一个元素，返回删除的元素(改变原数组)
 
 ```javascript
-let a = [5, 4, 3, 2, 1]
+// Base
+let a = [5]
 let result = a.shift()
-console.log(result)   // 5
-console.log(a)        // [4, 3, 2, 1]
+console.log(result)      // 5
+console.log(a)           // []
+
+// More
+result = a.shift()       // 数组元素为空后会返回undefined
+console.log(result)      // undefined
+console.log(a)           // []
 ```
 
 ### 05、`join(value)`将数组用value连接为字符串(不改变原数组)
 
 ```javascript
+// Base
 let a = [1, 2, 3, 4, 5]
-let result = a.join(0)
-console.log(result)   // '102030405'
-console.log(a)        // [1, 2, 3, 4, 5]
-
-result = a.join(',')
+let result = a.join(',')
 console.log(result)   // '1,2,3,4,5'
 console.log(a)        // [1, 2, 3, 4, 5]
+
+// More
+let obj = {
+  toString() {
+    console.log('调用了toString()方法！')
+    return 'a'
+  },
+  toValue() {
+    console.log('toValue()方法！')
+    return 'b'
+  }
+}
+result = a.join(obj) // 使用对象时会调用对象自身的toString方法转化为字符串，我们这里重写了toString，从而覆盖了原型链上的toString
+// 调用了toString()方法！
+console.log(result)   // 1a2a3a4a5
+console.log(a)        // [1, 2, 3, 4, 5]
+
+// join的一个相对的方法是字符串的split方法
+console.log('1a2a3a4a5'.split('a')) // [1, 2, 3, 4, 5]
 ```
 
 ### 06、`reverse()`反转数组(改变原数组)
 
 ```javascript
+// Base
 let a = [1, 2, 3, 4, 5]
 let result = a.reverse()
 console.log(result)   // [5, 4, 3, 2, 1]
 console.log(a)        // [5, 4, 3, 2, 1]
+
+// More
+a = [1, [2, 3], [4, 5]]
+result = a.reverse()
+console.log(result)   // [[4, 5], [2, 3], 1]
+console.log(a)        // [[4, 5], [2, 3], 1]
+// 可以看到这里的反转只是基于数组的第一层，属于浅反转。
+
+// 一个简单的深反转，使用递归实现
+const deepReverse = (array) => {
+  let temp = array.reverse()
+  temp.forEach(v => {
+    if(Object.prototype.toString.call(v) === '[object Array]') {
+      deepReverse(v)
+    }
+  })
+  return temp
+}
+a = [1, [2, 3], [4, 5]]
+result = deepReverse(a)
+console.log(result)    // [[5, 4], [3, 2], 1]
 ```
 
 ### 07、`slice(start, end)`返回新数组，包含原数组索引start的值到索引end的值，不包含end(不改变原数组)
 
 ```javascript
+// Base
 let a = [1, 2, 3, 4, 5]
 let result = a.slice(2, 4)
 console.log(result)   // [3, 4]
 console.log(a)        // [1, 2, 3, 4, 5]
+
+// More
+console.log(a.slice(1))         // [2, 3, 4, 5]   只有一个参数且不小于0，则从此索引开始截取到数组的最后
+console.log(a.slice(-1))        // [5]            只有一个参数且小于0，则倒数该参数的绝对值位，截取到数组的最后
+console.log(a.slice(-1, 1))     // []             反向截取，不合法返回空数组
+console.log(a.slice(1, -1))     // [2, 3, 4]      从第一位截取到倒数第一位，不包含倒数第一位
+console.log(a.slice(-1, -2))    // []             反向截取，不合法返回空数组
+console.log(a.slice(-2, -1))    // [4]            倒数第二位截取到倒数第一位
 ```
 
 ### 08、`splice(index, count, value)`从索引为index处删除count个元素，插入value(改变原数组)
 
 ```javascript
+// Base
 let a = [1, 2, 3, 4, 5]
 let result = a.splice(1, 2, 0)
 console.log(result)   // [2, 3]
 console.log(a)        // [1, 0, 4, 5]
+
+// More
+a = [1, 2, 3, 4, 5]
+console.log(a.splice(1))
 ```
 
 ### 09、`sort()`对数组元素进行排序(改变原数组)
