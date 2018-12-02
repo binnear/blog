@@ -24,15 +24,21 @@ console.log(result.__proto__ === a)      // true
 
 ```
 
-### 01、`Object.defineProperties(obj, props)`在obj上定义props配置的属性，并返回obj
+### 01、`Object.defineProperty(obj, prop, descriptor)`为对象创建一个自定义配置的属性
 
 ```javascript
 // Base
 const a = { a: 1 }
 const result = Object.defineProperty(a, 'b', {
-  configurable: true,
-  enumerable: true,
-  get: function () { return 3; }
+  // 必定存在的配置项
+  configurable: false,   // 决定属性能否从对象中被删除
+  enumerable: false,     // 决定该属性能否被遍历出来
+  // 1 互斥配置项，与2互斥
+  writable: false,       // 决定该属性的值能否被改变
+  value: 2,              // 设置属性的值
+  // 2 与1互斥
+  get() {},              // 获取属性值都会执行这个方法，方法的返回值就是我们将获取到的值
+  set(value) {},         // 每次对属性的赋值都会作为value传递到set方法，并执行该方法
 })
 console.log(result)           //
 console.log(a)                //
